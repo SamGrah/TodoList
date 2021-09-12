@@ -1,2 +1,2 @@
 # TodoList
-Launch School JS130 Project
+Launch School JS185
