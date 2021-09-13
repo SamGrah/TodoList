@@ -4,14 +4,19 @@ const morgan = require("morgan");
 const flash = require("express-flash");
 const session = require("express-session");
 const { body, validationResult } = require("express-validator");
-const store = require("connect-loki");
+
 const PgPersistence = require("./lib/pg-persistence");
 const catchError = require("./lib/catch-error");
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 const app = express();
 const host = config.HOST;
 const port = config.PORT;
-const LokiStore = store(session);
+
+const store = new MongoDBStore({
+  uri: 'mongodb://127.0.0.1:27017/Session_Data',
+  collection: 'Todo_Session_Data'
+}); 
 
 app.set("views", "./views");
 app.set("view engine", "pug");
@@ -30,7 +35,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   secret: config.SECRET,
-  store: new LokiStore({}),
+  store: store,
 }));
 
 app.use(flash());
